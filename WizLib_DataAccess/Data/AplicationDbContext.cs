@@ -15,7 +15,7 @@ namespace WizLib_DataAccess.Data
             
         }
 
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; } 
 
     }
 }
