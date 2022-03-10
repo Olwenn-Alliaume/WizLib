@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -7,15 +8,14 @@ using System.Threading.Tasks;
 
 namespace WizLib_Model.Models
 {
-    [Table("tb_Genre")]
-    public class Genre
+    public class Publisher
     {
-        public int GenreId { get; set; }
+        [Key]
+        public int Publisher_Id { get; set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
 
-        [Column("Name")]
-        public string GenreName { get; set; }
 
-        //public int DisplayOrder { get; set; }
 
     }
 }
