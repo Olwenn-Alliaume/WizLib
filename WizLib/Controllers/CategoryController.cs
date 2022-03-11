@@ -22,5 +22,24 @@ namespace WizLib.Controllers
             List<Category> objList = _db.Categories.ToList();
             return View(objList);
         }
+
+        public IActionResult Upsrt(int? id)
+        {
+            Category obj = new Category();
+            if( id  == null )
+            {
+                return View(obj);
+            }
+            else
+            {
+                //Edit
+                obj = _db.Categories.First(u => u.Category_Id == id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                return View(obj);
+            }
+        }
     }
 }
