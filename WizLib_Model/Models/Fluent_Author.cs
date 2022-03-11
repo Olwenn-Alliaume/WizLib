@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace WizLib_Model.Models
 {
-    public class Author
+    public class Fluent_Author
     {
-        [Key]
         public int Author_Id { get; set; }
-        [Required]
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
         public string Location { get; set; }
@@ -26,10 +23,7 @@ namespace WizLib_Model.Models
             }
         }
 
-
-        public ICollection<BookAuthor> BookAuthors { get; set; }
-
-
+        public ICollection<Fluent_BookAuthor> Fluent_BookAuthors { get; set; }
 
     }
 }

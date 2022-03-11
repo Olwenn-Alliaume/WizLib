@@ -11,7 +11,6 @@ namespace WizLib_Model.Models
     {
         [Key]
         public int Category_Id { get; set; }
-
         public string Name { get; set; }
 
     }

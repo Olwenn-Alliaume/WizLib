@@ -8,18 +8,12 @@ using System.Threading.Tasks;
 
 namespace WizLib_Model.Models
 {
-    public class Publisher
+    public class Fluent_BookAuthor
     {
-        [Key]
-        public int Publisher_Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Location { get; set; }
-        public List<Book> Books { get; set; }
+        public int Book_Id { get; set; }
+        public int Author_Id { get; set; }
 
-
-
-
+        public Fluent_Book Fluent_Book { get; set; }
+        public Fluent_Author Fluent_Author { get; set; }
     }
 }
