@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using WizLib_DataAccess.Data;
 using WizLib_Model.Models;
+using WizLib_Model.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WizLib.Controllers
 {
@@ -25,7 +27,15 @@ namespace WizLib.Controllers
 
         public IActionResult Upsert(int? id)
         {
-            Book obj = new Book();
+            BookVM obj = new BookVM();
+            obj.PublisherList = _db.Publishers.Select(i => new SelectListItem
+            {
+
+                Text = i.Name,
+                Value = i.Publisher_Id.ToString()
+
+            });
+
             if( id  == null )
             {
                 return View(obj);
@@ -33,7 +43,7 @@ namespace WizLib.Controllers
             else
             {
                 //Edit
-                obj = _db.Books.FirstOrDefault(u => u.Book_Id == id);
+                obj.Book = _db.Books.FirstOrDefault(u => u.Book_Id == id);
                 if (obj == null)
                 {
                     return NotFound();
@@ -44,26 +54,22 @@ namespace WizLib.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Book obj)
+        public IActionResult Upsert(BookVM obj)
         {
-            if (ModelState.IsValid)
-            {
-                if(obj.Book_Id == 0)
+
+                if(obj.Book.Book_Id == 0)
                 {
                     //this is create
-                    _db.Books.Add(obj);
+                    _db.Books.Add(obj.Book);
 
                 }
                 else
                 {
                     //this is update
-                    _db.Books.Update(obj);
+                    _db.Books.Update(obj.Book);
                 }
                 _db.SaveChanges();
                 return RedirectToAction(nameof(Index));
-
-            }
-            return View(obj);
 
         }
 
@@ -76,59 +82,7 @@ namespace WizLib.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult CreateMultiple2()
-        {
-
-            List<Book> catList = new List<Book>();
-            for(int i = 1; i <= 2; i++)
-            {
-                catList.Add(new Book { Title = Guid.NewGuid().ToString() });
-                //_db.Books.Add(new Book { Name = Guid.NewGuid().ToString() });
-            }
-
-            _db.Books.AddRange(catList);
-            _db.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult CreateMultiple5()
-        {
-            List<Book> catList = new List<Book>();
-            for (int i = 1; i <= 5; i++)
-            {
-                catList.Add(new Book { Title = Guid.NewGuid().ToString() });
-                //_db.Books.Add(new Book { Name = Guid.NewGuid().ToString() });
-            }
-
-            _db.Books.AddRange(catList);
-            _db.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
-        }
-        public IActionResult RemoveMultiple2()
-        {
-
-            IEnumerable<Book> catList = _db.Books.OrderByDescending( u => u.Book_Id ).Take(2).ToList();
-            
-
-            _db.Books.RemoveRange(catList);
-            _db.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult RemoveMultiple5()
-        {
-            IEnumerable<Book> catList = _db.Books.OrderByDescending(u => u.Book_Id).Take(5).ToList();
-
-
-            _db.Books.RemoveRange(catList);
-            _db.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
-        }
-
+        
     }
 
     
