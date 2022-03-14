@@ -8,24 +8,24 @@ using WizLib_Model.Models;
 
 namespace WizLib.Controllers
 {
-    public class CategoryController : Controller
+    public class BookController : Controller
     {
         private readonly AplicationDbContext _db;
 
-        public CategoryController(AplicationDbContext db)
+        public BookController(AplicationDbContext db)
         {
             _db = db;
         }
 
         public IActionResult Index()
         {
-            List<Category> objList = _db.Categories.ToList();
+            List<Book> objList = _db.Books.ToList();
             return View(objList);
         }
 
         public IActionResult Upsert(int? id)
         {
-            Category obj = new Category();
+            Book obj = new Book();
             if( id  == null )
             {
                 return View(obj);
@@ -33,7 +33,7 @@ namespace WizLib.Controllers
             else
             {
                 //Edit
-                obj = _db.Categories.FirstOrDefault(u => u.Category_Id == id);
+                obj = _db.Books.FirstOrDefault(u => u.Book_Id == id);
                 if (obj == null)
                 {
                     return NotFound();
@@ -44,20 +44,20 @@ namespace WizLib.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Category obj)
+        public IActionResult Upsert(Book obj)
         {
             if (ModelState.IsValid)
             {
-                if(obj.Category_Id == 0)
+                if(obj.Book_Id == 0)
                 {
                     //this is create
-                    _db.Categories.Add(obj);
+                    _db.Books.Add(obj);
 
                 }
                 else
                 {
                     //this is update
-                    _db.Categories.Update(obj);
+                    _db.Books.Update(obj);
                 }
                 _db.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -70,8 +70,8 @@ namespace WizLib.Controllers
         public IActionResult Delete(int id)
         {
 
-            var ojbFromDb = _db.Categories.FirstOrDefault( u => u.Category_Id == id );
-            _db.Categories.Remove(ojbFromDb);
+            var ojbFromDb = _db.Books.FirstOrDefault( u => u.Book_Id == id );
+            _db.Books.Remove(ojbFromDb);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
@@ -79,14 +79,14 @@ namespace WizLib.Controllers
         public IActionResult CreateMultiple2()
         {
 
-            List<Category> catList = new List<Category>();
+            List<Book> catList = new List<Book>();
             for(int i = 1; i <= 2; i++)
             {
-                catList.Add(new Category { Name = Guid.NewGuid().ToString() });
-                //_db.Categories.Add(new Category { Name = Guid.NewGuid().ToString() });
+                catList.Add(new Book { Title = Guid.NewGuid().ToString() });
+                //_db.Books.Add(new Book { Name = Guid.NewGuid().ToString() });
             }
 
-            _db.Categories.AddRange(catList);
+            _db.Books.AddRange(catList);
             _db.SaveChanges();
 
             return RedirectToAction(nameof(Index));
@@ -94,14 +94,14 @@ namespace WizLib.Controllers
 
         public IActionResult CreateMultiple5()
         {
-            List<Category> catList = new List<Category>();
+            List<Book> catList = new List<Book>();
             for (int i = 1; i <= 5; i++)
             {
-                catList.Add(new Category { Name = Guid.NewGuid().ToString() });
-                //_db.Categories.Add(new Category { Name = Guid.NewGuid().ToString() });
+                catList.Add(new Book { Title = Guid.NewGuid().ToString() });
+                //_db.Books.Add(new Book { Name = Guid.NewGuid().ToString() });
             }
 
-            _db.Categories.AddRange(catList);
+            _db.Books.AddRange(catList);
             _db.SaveChanges();
 
             return RedirectToAction(nameof(Index));
@@ -109,10 +109,10 @@ namespace WizLib.Controllers
         public IActionResult RemoveMultiple2()
         {
 
-            IEnumerable<Category> catList = _db.Categories.OrderByDescending( u => u.Category_Id ).Take(2).ToList();
+            IEnumerable<Book> catList = _db.Books.OrderByDescending( u => u.Book_Id ).Take(2).ToList();
             
 
-            _db.Categories.RemoveRange(catList);
+            _db.Books.RemoveRange(catList);
             _db.SaveChanges();
 
             return RedirectToAction(nameof(Index));
@@ -120,10 +120,10 @@ namespace WizLib.Controllers
 
         public IActionResult RemoveMultiple5()
         {
-            IEnumerable<Category> catList = _db.Categories.OrderByDescending(u => u.Category_Id).Take(5).ToList();
+            IEnumerable<Book> catList = _db.Books.OrderByDescending(u => u.Book_Id).Take(5).ToList();
 
 
-            _db.Categories.RemoveRange(catList);
+            _db.Books.RemoveRange(catList);
             _db.SaveChanges();
 
             return RedirectToAction(nameof(Index));
