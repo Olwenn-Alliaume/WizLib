@@ -7,6 +7,7 @@ using WizLib_DataAccess.Data;
 using WizLib_Model.Models;
 using WizLib_Model.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace WizLib.Controllers
 {
@@ -21,7 +22,15 @@ namespace WizLib.Controllers
 
         public IActionResult Index()
         {
-            List<Book> objList = _db.Books.ToList();
+            List<Book> objList = _db.Books.Include(u => u.Publisher).ToList();
+            //foreach (var obj in objList)
+            //{
+            //   // Least Efficient
+            //    obj.Publisher = _db.Publishers.FirstOrDefault(u => u.Publisher_Id == obj.Publisher_Id);
+
+            //   // Explicit Loading More Efficient
+            //    _db.Entry(obj).Reference(u => u.Publisher).Load();
+            //}
             return View(objList);
         }
 
@@ -50,6 +59,54 @@ namespace WizLib.Controllers
                 }
                 return View(obj);
             }
+        }
+
+        public IActionResult Details(int? id)
+        {
+            BookVM obj = new BookVM();
+            
+
+            if (id == null)
+            {
+                return View(obj);
+            }
+            else
+            {
+                //Edit
+                obj.Book = _db.Books.Include(u => u.BookDetail).FirstOrDefault(u => u.Book_Id == id);
+               //obj.Book.BookDetail = _db.BookDetails.FirstOrDefault(u => u.BookDetail_Id == obj.Book.BookDetail_Id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                return View(obj);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Details(BookVM obj)
+        {
+
+            if (obj.Book.BookDetail.BookDetail_Id == 0)
+            {
+                //this is create
+                _db.BookDetails.Add(obj.Book.BookDetail);
+                _db.SaveChanges();
+
+                var BookFromDb = _db.Books.FirstOrDefault(u => u.Book_Id == obj.Book.Book_Id);
+                BookFromDb.BookDetail_Id = obj.Book.BookDetail.BookDetail_Id;
+                _db.SaveChanges();
+
+            }
+            else
+            {
+                //this is update
+                _db.BookDetails.Update(obj.Book.BookDetail);
+                _db.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
+
         }
 
         [HttpPost]
