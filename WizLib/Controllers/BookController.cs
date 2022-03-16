@@ -229,20 +229,43 @@ namespace WizLib.Controllers
 
             //Updated relat4ed data
 
-            var bookTemp1 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.Book_Id == 6);
-            bookTemp1.BookDetail.NumberOfChapters = 2222;
-            _db.Books.Update(bookTemp1);
-            _db.SaveChanges();
+            //var bookTemp1 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.Book_Id == 6);
+            //bookTemp1.BookDetail.NumberOfChapters = 2222;
+            //_db.Books.Update(bookTemp1);
+            //_db.SaveChanges();
 
 
-            var bookTemp2 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.Book_Id == 7);
-            bookTemp1.BookDetail.Weight = "123";
-            _db.Books.Attach(bookTemp2);
-            _db.SaveChanges();
+            //var bookTemp2 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.Book_Id == 7);
+            //bookTemp1.BookDetail.Weight = "123";
+            //_db.Books.Attach(bookTemp2);
+            //_db.SaveChanges();
+
+
+            //Views
+            var viewList = _db.BookDetailsFromViews.ToList();
+            var viewList1 = _db.BookDetailsFromViews.FirstOrDefault();
+            var viewList2 = _db.BookDetailsFromViews.Where(u=>u.Price > 500);
+
+            //RAW SQL
+
+            var bookRaw = _db.Books.FromSqlRaw("Select * from dbo.books").ToList();
+            //SQL injection attack prone
+            int id = 6;
+            var bookTemp1 = _db.Books.FromSqlRaw($"Select * from dbo.books where Book_Id=({id})").ToList();
+
+            var booksSproc = _db.Books.FromSqlInterpolated($" EXEC dbo.getAllBookDetails { id}").ToList();
+
+            var BookFilter1 = _db.Books.Include(e => e.BookAuthors.Where(p => p.Author_Id == 1)).ToList();
+            var BookFilter2 = _db.Books.Include(e => e.BookAuthors.OrderByDescending(p => p.Author_Id).Take(2)).ToList();
+
 
             return RedirectToAction(nameof(Index));
 
+            
+            //.NET 5 only
+
         }
+
 
     }
 
